@@ -1,19 +1,37 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
-const generatedHtml = require('./lib/generatedHtml');
+const employee = require('./lib/employee');
+const newEmployee = require('./lib/employee');
 
 const output = [];
 
 const questions = [
   {
+    type: 'list',
+    message: 'Please select a employee role:',
+    choices: ['Manager', 'Intern', 'Engineer'],
+    name: 'role',
+  },
+  {
     type: 'input',
-    message: 'Please enter the team managers name:',
-    name: 'managerName',
+    message: 'Please enter the employees name:',
+    name: 'name',
   },
   {
     type: 'input',
     message: 'Please enter their employee I.D. number:',
     name: 'employeeId',
+    default: () => {},
+    validate: function (employeeId) {
+      valid = /^[1-9]+[0-9]*$/.test(employeeId);
+
+      if (valid) {
+        return true;
+      } else {
+        console.log('\nPlease enter a non-negative number');
+        return false;
+      }
+    },
   },
   {
     type: 'input',
@@ -37,6 +55,17 @@ const questions = [
     type: 'input',
     message: 'Please enter their office number:',
     name: 'employeeOfficeNumber',
+    default: () => {},
+    validate: function (employeeOfficeNumber) {
+      valid = /^[1-9]+[0-9]*$/.test(employeeOfficeNumber);
+
+      if (valid) {
+        return true;
+      } else {
+        console.log('\nPlease enter a non-negative number');
+        return false;
+      }
+    },
   },
   {
     type: 'confirm',
@@ -48,19 +77,15 @@ const questions = [
 
 const ask = () => {
   inquirer.prompt(questions).then((answers) => {
-    output.push(answers);
+    output.push(employee(answers));
     if (answers.addEmployees) {
       ask();
     } else {
-      fs.writeFile('./generated/index.html', generatedHtml, (err) =>
-        err
-          ? console.log(err)
-          : console.log('Success, your file is in the "generated" folder!')
-      );
+      // employee(answers);
+      console.log('Success!');
     }
+    console.log(output);
   });
 };
 
 ask();
-
-module.exports = ask;
