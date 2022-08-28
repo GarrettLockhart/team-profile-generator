@@ -48,8 +48,13 @@ body {
 }
 
 /* A elements that don't have a class get default styles */
-a:not([class]) {
-  text-decoration-skip-ink: auto;
+a {
+  color: black;
+  cursor: pointer;
+}
+
+a:hover {
+  color: var(--secondary-color);
 }
 
 /* Make images easier to work with */
@@ -99,7 +104,7 @@ select {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 150px;
+  height: 70px;
   font-size: 1.7em;
 }
 
@@ -111,7 +116,6 @@ select {
 
 .card {
   display: flex;
-  align-items: center;
   flex-direction: column;
   width: 49%;
   height: 300px;
@@ -131,4 +135,10 @@ select {
 
 .card-position {
   font-weight: 200;
+}
+
+.card-content-container {
+  margin-top: 30px;
+  padding-left: 15px;
+  font-size: 1.05em;
 }

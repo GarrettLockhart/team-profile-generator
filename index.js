@@ -1,13 +1,15 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
-const Employee = require('./lib/Employee');
-const Manager = require('./lib/Manager');
-const Intern = require('./lib/Intern');
-const Engineer = require('./lib/Engineer');
+
+const createTeam = require('./lib/createTeam.js');
+
+const Manager = require('./lib/Manager.js');
+const Intern = require('./lib/Intern.js');
+const Engineer = require('./lib/Engineer.js');
 
 const output = [];
 
-function createTeam() {
+function runApp() {
   inquirer
     .prompt([
       {
@@ -18,7 +20,7 @@ function createTeam() {
           'Manager',
           'Engineer',
           'Intern',
-          'No more team members are needed.',
+          'All done, generate webpage!.',
         ],
       },
     ])
@@ -35,14 +37,14 @@ function createTeam() {
           break;
 
         default:
-          console.log(output);
+          htmlBuilder();
       }
     });
 }
 
 const addManager = () => {
   inquirer
-    .prompts([
+    .prompt([
       {
         type: 'input',
         message: 'What is the managers name?',
@@ -77,7 +79,7 @@ const addManager = () => {
       },
       {
         type: 'input',
-        message: 'Please enter the managers email address',
+        message: 'Please enter the managers email address:',
         name: 'managerEmail',
         default: () => {},
         validate: function (email) {
@@ -93,8 +95,8 @@ const addManager = () => {
       },
       {
         type: 'input',
-        message: 'Please enter the managers office number',
-        name: 'managersOfficeNumber',
+        message: 'Please enter the managers office number:',
+        name: 'managerOfficeNumber',
         default: () => {},
         validate: function (officeNum) {
           valid = /^[1-9]+[0-9]*$/.test(officeNum);
@@ -113,15 +115,16 @@ const addManager = () => {
         answers.managerName,
         answers.managerId,
         answers.managerEmail,
-        answers.officeNumber
+        answers.managerOfficeNumber
       );
       output.push(manager);
+      runApp();
     });
 };
 
 const addIntern = () => {
   inquirer
-    .prompts([
+    .prompt([
       {
         type: 'input',
         message: 'What is the interns name?',
@@ -156,7 +159,7 @@ const addIntern = () => {
       },
       {
         type: 'input',
-        message: 'Please enter the interns email address',
+        message: 'Please enter the interns email address:',
         name: 'internsEmail',
         default: () => {},
         validate: function (email) {
@@ -172,35 +175,36 @@ const addIntern = () => {
       },
       {
         type: 'input',
-        message: 'Please enter the interns school name',
-        name: 'internsSchool',
+        message: 'Please enter the interns school name:',
+        name: 'internSchool',
         default: () => {},
-        validate: function (officeNum) {
-          valid = /^[1-9]+[0-9]*$/.test(officeNum);
+        validate: function (schoolName) {
+          valid = /^[a-zA-Z\s]*$/.test(schoolName);
 
           if (valid) {
             return true;
           } else {
-            console.log('\nPlease enter a non-negative number');
+            console.log('\nPlease enter only letters, and spaces');
             return false;
           }
         },
       },
     ])
     .then((answers) => {
-      const intern = new Engineer(
+      const intern = new Intern(
         answers.internName,
         answers.internId,
         answers.internEmail,
         answers.internSchool
       );
       output.push(intern);
+      runApp();
     });
 };
 
 const addEngineer = () => {
   inquirer
-    .prompts([
+    .prompt([
       {
         type: 'input',
         message: 'What is the engineers name?',
@@ -235,7 +239,7 @@ const addEngineer = () => {
       },
       {
         type: 'input',
-        message: 'Please enter the engineers email address',
+        message: 'Please enter the engineers email address:',
         name: 'engineerEmail',
         default: () => {},
         validate: function (email) {
@@ -251,7 +255,7 @@ const addEngineer = () => {
       },
       {
         type: 'input',
-        message: 'Please enter the engineers github URL',
+        message: 'Please enter the engineers github username:',
         name: 'engineerGithub',
       },
     ])
@@ -263,5 +267,16 @@ const addEngineer = () => {
         answers.engineerGithub
       );
       output.push(engineer);
+      runApp();
     });
 };
+
+const htmlBuilder = () => {
+  console.log('Successfully generated team, please look in the "dist" folder!');
+
+  fs.writeFileSync('./dist/index.html', createTeam(output), (err) => {
+    err ? console.error(err) : console.log(err);
+  });
+};
+
+runApp();
