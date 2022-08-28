@@ -160,7 +160,7 @@ const addIntern = () => {
       {
         type: 'input',
         message: 'Please enter the interns email address:',
-        name: 'internsEmail',
+        name: 'internEmail',
         default: () => {},
         validate: function (email) {
           valid = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
